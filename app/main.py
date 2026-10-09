@@ -25,7 +25,7 @@ def index():
 ## List of pokemon
 @app.route('/pokemons/')
 def listado():
-    return render_template('listado.html', pokemons=pokemons_data)
+    return render_template('listado.html', pokemons=pokemons_data, proyecto = "ProyectoPokemon")
 
 
 
@@ -50,7 +50,7 @@ def detalle(id):
     else:
         categoria_peso = "Pesado"
 
-    return render_template('detalle.html', pokemon=pokemon_encontrado, categoria_peso=categoria_peso)
+    return render_template('detalle.html', pokemon=pokemon_encontrado, categoria_peso=categoria_peso, proyecto = "ProyectoPokemon")
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

@@ -1,90 +1,87 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ pokemon.name }} - Estadísticas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="body-detalle type-{{ pokemon.types[0]|lower }}">
-    <main class="pokedex">
-        <header class="pokedex-header">
-            <a href="{{ url_for('listado') }}" class="back-link">← Pokémon</a>
-            <span class="pokedex-title">POKÉDEX</span>
-        </header>
-        <section class="pokemon-profile">
-            <div class="pokemon-display">
-                <span class="pokemon-number">Nº {{ "%03d"|format(pokemon.id) }}</span>
-                <div class="pokemon-image">
-                    <div class="scan-circle"></div>
-                    <img src="{{ pokemon.sprites.front_default }}" alt="{{ pokemon.name }}">
-                </div>
+{% extends "base.html" %}
+
+{% block title %} detalle - {{proyecto}} {% endblock %}
+
+{% block body_class %}body-detalle type-{{ pokemon.types[0]|lower }}{% endblock %}
+
+{% block content %}
+<main class="pokedex">
+    <header class="pokedex-header">
+        <a href="{{ url_for('listado') }}" class="back-link">← Pokémon</a>
+        <span class="pokedex-title">POKÉDEX</span>
+    </header>
+    <section class="pokemon-profile">
+        <div class="pokemon-display">
+            <span class="pokemon-number">Nº {{ "%03d"|format(pokemon.id) }}</span>
+            <div class="pokemon-image">
+                <div class="scan-circle"></div>
+                <img src="{{ pokemon.sprites.front_default }}" alt="{{ pokemon.name }}">
             </div>
-            <div class="pokemon-info">
-                <span class="pokemon-label">POKÉMON</span>
-                <h1>{{ pokemon.name }}</h1>
-                <div class="type-list">
-                    {% for tipo in pokemon.types %}
-                        <span class="type-badge">{{ tipo }}</span>
-                    {% endfor %}
-                </div>
-                <div class="pokemon-category">
-                    <span>CATEGORÍA</span>
-                    <strong>{{ categoria_peso }}</strong>
-                </div>
-            </div>
-        </section>
-        <section class="stats-panel">
-            <div class="panel-title">
-                <span>01</span>
-                <h2>ESTADÍSTICAS BASE</h2>
-            </div>
-            <div class="stats-list">
-                {% for stat in pokemon.stats %}
-                <div class="stat">
-                    <div class="stat-name">{{ stat.name }}</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" style="width: {{ (stat.value * 100 / 150) | int }}%;"></div>
-                    </div>
-                    <div class="stat-number">{{ stat.value }}</div>
-                </div>
+        </div>
+        <div class="pokemon-info">
+            <span class="pokemon-label">POKÉMON</span>
+            <h1>{{ pokemon.name }}</h1>
+            <div class="type-list">
+                {% for tipo in pokemon.types %}
+                <span class="type-badge">{{ tipo }}</span>
                 {% endfor %}
             </div>
-        </section>
-        <section class="physical-panel">
-            <div class="panel-title">
-                <span>02</span>
-                <h2>DATOS DEL POKÉMON</h2>
+            <div class="pokemon-category">
+                <span>CATEGORÍA</span>
+                <strong>{{ categoria_peso }}</strong>
             </div>
-            <div class="physical-data">
-                <div class="data-box">
-                    <span>ALTURA</span>
-                    <strong>{{ pokemon.height }}</strong>
+        </div>
+    </section>
+    <section class="stats-panel">
+        <div class="panel-title">
+            <span>01</span>
+            <h2>ESTADÍSTICAS BASE</h2>
+        </div>
+        <div class="stats-list">
+            {% for stat in pokemon.stats %}
+            <div class="stat">
+                <div class="stat-name">{{ stat.name }}</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: {{ (stat.value * 100 / 150) | int }}%;"></div>
                 </div>
-                <div class="data-box">
-                    <span>PESO</span>
-                    <strong>{{ pokemon.weight }}</strong>
-                </div>
-                <div class="data-box">
-                    <span>CATEGORÍA</span>
-                    <strong>{{ categoria_peso }}</strong>
-                </div>
+                <div class="stat-number">{{ stat.value }}</div>
             </div>
-        </section>
-        <section class="moves-panel">
-            <div class="panel-title">
-                <span>03</span>
-                <h2>MOVIMIENTOS</h2>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="physical-panel">
+        <div class="panel-title">
+            <span>02</span>
+            <h2>DATOS DEL POKÉMON</h2>
+        </div>
+        <div class="physical-data">
+            <div class="data-box">
+                <span>ALTURA</span>
+                <strong>{{ pokemon.height }}</strong>
             </div>
-            <div class="moves-list">
-                {% for move in pokemon.moves %}
-                <div class="move-card">
-                    <div class="move-name">{{ move.name }}</div>
-                    <div class="move-type">{{ move.type }}</div>
-                </div>
-                {% endfor %}
+            <div class="data-box">
+                <span>PESO</span>
+                <strong>{{ pokemon.weight }}</strong>
             </div>
-        </section>
-    </main>
-</body>
-</html>
+            <div class="data-box">
+                <span>CATEGORÍA</span>
+                <strong>{{ categoria_peso }}</strong>
+            </div>
+        </div>
+    </section>
+    <section class="moves-panel">
+        <div class="panel-title">
+            <span>03</span>
+            <h2>MOVIMIENTOS</h2>
+        </div>
+        <div class="moves-list">
+            {% for move in pokemon.moves %}
+            <div class="move-card">
+                <div class="move-name">{{ move.name }}</div>
+                <div class="move-type">{{ move.type }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

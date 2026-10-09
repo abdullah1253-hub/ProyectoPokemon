@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ proyecto }}</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="body-inicio">
-    <div class="hero-section">
+{% block title %}Inicio - {{ proyecto }}{% endblock %}
+
+{% block body_class %}body-inicio{% endblock %}
+
+{% block content %}
+
+<div class="hero-section">
         <h1 class="titulo-inicio">¡{{ proyecto }}!</h1>
         <p class="subtitle">Prepárate para la aventura definitiva.</p>
         
@@ -19,5 +17,5 @@
     <footer>
         {{ proyecto }} - {{ nombre }} - {{ año }}
     </footer>
-</body>
-</html>
+
+{% endblock %}
