@@ -36,3 +36,42 @@ http://localhost:8080/
 ## Autor
 
 Abdullah Riaz
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##  Estructura del Proyecto
+
+```text
+ProyectoPokemon/
+├── app/
+│   ├── main.py              # Servidor Flask, lógica de rutas y carga JSON
+│   ├── static/
+│   │   └── style.css        # Hoja de estilos global unificada
+│   └── templates/
+│       ├── base.html        # Plantilla maestra (Jinja2)
+│       ├── index.html       # Vista de bienvenida
+│       ├── listado.html     # Vista de catálogo (Grid 4x4)
+│       └── detalle.html     # Vista individual con estadísticas
+├── data/
+│   └── pokemons-competitive.json # Base de datos del proyecto
+└── README.md                # Documentación del proyecto

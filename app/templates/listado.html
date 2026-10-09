@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Pokémon</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="body-app">
+    <h1 class="titulo-listado">Elige a tu Pokémon</h1>
+    <a href="{{ url_for('index') }}" class="back-home">← Volver al inicio</a>
+    
+    <div class="grid">
+        {% for pokemon in pokemons %}
+        <div class="card type-{{ pokemon.types[0]|lower }}">
+            <img src="{{ pokemon.sprites.front_default }}" alt="{{ pokemon.name }}">
+            <h3 class="pokemon-name">{{ pokemon.name }}</h3>
+            
+            <p>
+                {% for tipo in pokemon.types %}
+                    <span class="type-badge">{{ tipo }}</span>
+                {% endfor %}
+            </p>
+            
+            <a href="{{ url_for('detalle', id=pokemon.id) }}" class="btn">Ver Detalles</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

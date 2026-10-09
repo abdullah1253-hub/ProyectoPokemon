@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ proyecto }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="body-inicio">
+    <div class="hero-section">
+        <h1 class="titulo-inicio">¡{{ proyecto }}!</h1>
+        <p class="subtitle">Prepárate para la aventura definitiva.</p>
+        
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Logo de Pokémon" class="pokemon-image">
+        <a href="{{ url_for('listado') }}" class="btn-empezar">Ver Pokémons</a>
+    </div>
+
+    <footer>
+        {{ proyecto }} - {{ nombre }} - {{ año }}
+    </footer>
+</body>
+</html>
