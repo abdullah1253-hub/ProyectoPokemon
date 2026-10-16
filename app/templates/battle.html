@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Batalla - {{ proyecto }}{% endblock %}
+
+{% block body_class %}body-battle{% endblock %}
+
+{% block content %}
+<div class="battle-container">
+    <div class="listado-top-bar">
+        <a href="{{ url_for('listado', trainer=trainer) }}" class="back-link">← Volver al Listado</a>
+        <h1 class="titulo-listado titulo-batalla">Battle arena</h1>
+    </div>
+
+    <div class="arena-box">
+        <div class="combatant">
+            <div class="combatant-label">Trainer: {{ trainer }}</div>
+            <h1 class="combatant-name">{{ user_pokemon.name }}</h1>
+            <img src="{{ user_pokemon.sprites.front_default }}" alt="{{ user_pokemon.name }}" class="combatant-img">
+            <div class="combatant-stats">
+                Height: <strong>{{ user_pokemon.height }}</strong> | Weight: <strong>{{ user_pokemon.weight }}</strong>
+            </div>
+        </div>
+
+        <div class="vs-badge">VS</div>
+
+        <div class="combatant">
+            <div class="combatant-label">Random rival</div>
+            <h1 class="combatant-name">{{ rival_pokemon.name }}</h1>
+            <img src="{{ rival_pokemon.sprites.front_default }}" alt="{{ rival_pokemon.name }}" class="combatant-img">
+            <div class="combatant-stats">
+                Height: <strong>{{ rival_pokemon.height }}</strong> | Weight: <strong>{{ rival_pokemon.weight }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="battle-moves">
+        <div class="panel-title">
+            <span>01</span>
+            <h2>Attacks of {{ user_pokemon.name|upper }}</h2>
+        </div>
+        <div class="moves-list">
+            {% for move in user_moves %}
+            <div class="move-card">
+                <div class="move-name">{{ move.name }}</div>
+                <div class="move-type">{{ move.type }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,10 +8,18 @@
 
 <div class="hero-section">
         <h1 class="titulo-inicio">¡{{ proyecto }}!</h1>
-        <p class="subtitle">Prepárate para la aventura definitiva.</p>
+        <p class="subtitle">Get ready for the ultimate adventure.</p>
         
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Logo de Pokémon" class="pokemon-image">
-        <a href="{{ url_for('listado') }}" class="btn-empezar">Ver Pokémons</a>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokemon logo" class="pokemon-image">
+        
+        <form method="POST" action="{{ url_for('index') }}" class="trainer-form">
+        <input type="text" name="trainer" placeholder="Trainer's name (3-15 chars)" required minlength="3" maxlength="15">
+        <button type="submit" class="btn-empezar">Continue</button>
+    </form>
+
+    {% if error %}
+        <p style="color: #ff6b6b; margin-top: 10px; font-weight: bold;">{{ error }}</p>
+    {% endif %}
     </div>
 
     <footer>

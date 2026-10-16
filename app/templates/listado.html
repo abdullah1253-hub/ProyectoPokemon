@@ -1,27 +1,63 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 
-{% block title%} listado - {{proyecto}} {% endblock %}
+{% block title %}Listado - {{ proyecto }}{% endblock %}
 
 {% block body_class %}body-listado{% endblock %}
 
-    {% block content%}
-        <h1 class="titulo-listado">Elige a tu Pokémon</h1>
-    <a href="{{ url_for('index') }}" class="back-home">← Volver al inicio</a>
-    
-    <div class="grid">
-        {% for pokemon in pokemons %}
-        <div class="card type-{{ pokemon.types[0]|lower }}">
-            <img src="{{ pokemon.sprites.front_default }}" alt="{{ pokemon.name }}">
-            <h3 class="pokemon-name">{{ pokemon.name }}</h3>
-            
-            <p>
-                {% for tipo in pokemon.types %}
-                    <span class="type-badge">{{ tipo }}</span>
-                {% endfor %}
-            </p>
-            
-            <a href="{{ url_for('detalle', id=pokemon.id) }}" class="btn">Ver Detalles</a>
-        </div>
-        {% endfor %}
+{% block content %}
+<div class="listado-top-bar">
+    <h1 class="titulo-listado">Pokédex</h1>
+    <div class="active-trainer">
+        Trainer: <strong>{{ trainer }}</strong> | 
+        <a href="{{ url_for('index') }}" class="link-cambiar">Change</a>
     </div>
-    {% endblock %}
+</div>
+
+
+<div class="form-section">
+    <h3>Filter Pokémon</h3>
+    <form method="GET" action="{{ url_for('listado') }}" class="form-row">
+        <input type="hidden" name="trainer" value="{{ trainer }}">
+        <input type="text" name="name" class="form-input" placeholder="Search by name ..." value="{{ request.args.get('name', '') }}">
+        <select name="type" class="form-input">
+            <option value="">-- All the types --</option>
+            {% for t in all_types %}
+                <option value="{{ t }}" {% if request.args.get('type') == t %}selected{% endif %}>{{ t|capitalize }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">Filter</button>
+        <a href="{{ url_for('listado', trainer=trainer) }}" class="btn-clear">Clear</a>
+    </form>
+</div>
+
+<div class="form-section">
+    <h3>Choose your pokemon for the battle</h3>
+    <form method="POST" action="{{ url_for('listado') }}" class="form-row">
+        <input type="hidden" name="trainer" value="{{ trainer }}">
+        <input type="text" name="starter_name" class="form-input" placeholder="Ej: Pikachu" required>
+        <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">¡GO to battle!</button>
+    </form>
+    {% if starter_error %}
+        <div class="error-message">{{ starter_error }}</div>
+    {% endif %}
+</div>
+
+<div class="grid">
+    {% for pokemon in pokemons %}
+    <div class="card type-{{ pokemon.types[0]|lower }}">
+        <img src="{{ pokemon.sprites.front_default }}" alt="{{ pokemon.name }}">
+        <h2 class="pokemon-name">{{ pokemon.name }}</h2>
+        
+        <div class="type-list">
+            {% for tipo in pokemon.types %}
+                <span class="type-badge">{{ tipo }}</span>
+            {% endfor %}
+        </div>
+        
+        <a href="{{ url_for('detalle', id=pokemon.id, trainer=trainer) }}" class="btn">See details</a>
+    </div>
+    {% else %}
+    <p class="empty-grid-msg">No pokemon found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

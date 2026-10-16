@@ -5,12 +5,21 @@
 {% block body_class %}body-detalle type-{{ pokemon.types[0]|lower }}{% endblock %}
 
 {% block content %}
+
+{% if pokemon.weight < 500 %}
+        {% set categoria_peso = "Light" %}
+{% elif pokemon.weight <= 1500 %}
+        {% set categoria_peso = "Normal" %}
+{% else %}
+        {% set categoria_peso = "Heavy" %}
+{% endif %}
+
 <main class="pokedex">
     <header class="pokedex-header">
-        <a href="{{ url_for('listado') }}" class="back-link">← Pokémon</a>
+        <a href="{{ url_for('listado', trainer=trainer) }}" class="back-link">← Pokémon</a>
         <span class="pokedex-title">POKÉDEX</span>
     </header>
-    <section class="pokemon-profile">
+    <section class="pokemon-profile">   
         <div class="pokemon-display">
             <span class="pokemon-number">Nº {{ "%03d"|format(pokemon.id) }}</span>
             <div class="pokemon-image">
@@ -27,7 +36,7 @@
                 {% endfor %}
             </div>
             <div class="pokemon-category">
-                <span>CATEGORÍA</span>
+                <span>CATEGORY</span>
                 <strong>{{ categoria_peso }}</strong>
             </div>
         </div>
@@ -35,7 +44,7 @@
     <section class="stats-panel">
         <div class="panel-title">
             <span>01</span>
-            <h2>ESTADÍSTICAS BASE</h2>
+            <h2>STATISTICS</h2>
         </div>
         <div class="stats-list">
             {% for stat in pokemon.stats %}
@@ -52,19 +61,19 @@
     <section class="physical-panel">
         <div class="panel-title">
             <span>02</span>
-            <h2>DATOS DEL POKÉMON</h2>
+            <h2>POKEMONS'S DATA</h2>
         </div>
         <div class="physical-data">
             <div class="data-box">
-                <span>ALTURA</span>
+                <span>HEIGHT</span>
                 <strong>{{ pokemon.height }}</strong>
             </div>
             <div class="data-box">
-                <span>PESO</span>
+                <span>WEIGHT</span>
                 <strong>{{ pokemon.weight }}</strong>
             </div>
             <div class="data-box">
-                <span>CATEGORÍA</span>
+                <span>CATEGORY</span>
                 <strong>{{ categoria_peso }}</strong>
             </div>
         </div>
@@ -72,7 +81,7 @@
     <section class="moves-panel">
         <div class="panel-title">
             <span>03</span>
-            <h2>MOVIMIENTOS</h2>
+            <h2>MOVEMENTS</h2>
         </div>
         <div class="moves-list">
             {% for move in pokemon.moves %}
