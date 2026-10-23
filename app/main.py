@@ -1,14 +1,24 @@
 import json
 import random
 from pathlib import Path
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_session import Session
 
 app = Flask(__name__)
+
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_FILE_DIR"] = "./.flask_session"
+app.secret_key = "clave_super_secreta"
+
+Session(app)
+
 
 RUTA_DATOS = Path(__file__).resolve().parent.parent / "data" / "pokemons-competitive.json"
 
 with RUTA_DATOS.open('r', encoding='utf-8') as f:
     pokemons_data = json.load(f)
+
 
 ## Index page home
 @app.route('/', methods=['GET', 'POST'])
@@ -24,7 +34,9 @@ def index():
         if len(trainer) < 3 or len(trainer) > 15:
             error = "Trainer's name should be between 3 and 15 characters."
         else:
-            return redirect(url_for('listado', trainer=trainer))
+            session['trainer'] = trainer
+            print("SESSION:", dict(session))
+            return redirect(url_for('listado'))
         
     return render_template(
         'index.html',
@@ -36,7 +48,7 @@ def index():
 ## List of pokemon
 @app.route('/pokemons/', methods=['GET', 'POST'])
 def listado():
-    trainer = request.args.get('trainer') or request.form.get('trainer')
+    trainer = session.get('trainer')
     
     if not trainer:
         return redirect(url_for('index'))
@@ -95,7 +107,7 @@ def listado():
 @app.route('/pokemons/<int:id>/')
 def detalle(id):
 
-    trainer = request.args.get('trainer')
+    trainer = session.get('trainer')
 
     pokemon_encontrado = None
     for p in pokemons_data:
@@ -117,7 +129,7 @@ def detalle(id):
 ## Battle page
 @app.route('/battle')
 def battle():
-    trainer = request.args.get('trainer')
+    trainer = session.get('trainer')
     starter_name = request.args.get('starter')
 
     if not trainer or not starter_name:
