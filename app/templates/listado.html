@@ -9,7 +9,6 @@
     <h1 class="titulo-listado">Pokédex</h1>
     <div class="active-trainer">
         Trainer: <strong>{{ trainer }}</strong> | 
-        <a href="{{ url_for('index') }}" class="link-cambiar">Change</a>
     </div>
 </div>
 
@@ -17,7 +16,6 @@
 <div class="form-section">
     <h3>Filter Pokémon</h3>
     <form method="GET" action="{{ url_for('listado') }}" class="form-row">
-        <input type="hidden" name="trainer" value="{{ trainer }}">
         <input type="text" name="name" class="form-input" placeholder="Search by name ..." value="{{ request.args.get('name', '') }}">
         <select name="type" class="form-input">
             <option value="">-- All the types --</option>
@@ -26,7 +24,7 @@
             {% endfor %}
         </select>
         <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">Filter</button>
-        <a href="{{ url_for('listado', trainer=trainer) }}" class="btn-clear">Clear</a>
+        <a href="{{ url_for('listado') }}" class="btn-clear">Clear</a>
     </form>
 </div>
 
@@ -54,7 +52,7 @@
             {% endfor %}
         </div>
         
-        <a href="{{ url_for('detalle', id=pokemon.id, trainer=trainer) }}" class="btn">See details</a>
+        <a href="{{ url_for('detalle', id=pokemon.id) }}" class="btn">See details</a>
     </div>
     {% else %}
     <p class="empty-grid-msg">No pokemon found.</p>

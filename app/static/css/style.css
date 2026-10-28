@@ -924,3 +924,30 @@ a {
     .card-row img { margin: 0 0 15px 0; }
     .pokemon-row-id { margin: 0 0 10px 0; }
 }
+/* =========================
+   8. LOGOUT BUTTON
+   ========================= */
+.logout-container {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.btn-logout {
+    background: #ff3366;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+    border: 2px solid #590016;
+    text-transform: uppercase;
+    transition: 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #ff0044;
+    color: white;
+    transform: translateY(-2px);
+}

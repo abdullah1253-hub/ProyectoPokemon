@@ -12,6 +12,12 @@
 
 <body class="{% block body_class %}{% endblock %}">
 
+    {% if session.get('trainer') %}
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+    {% endif %}
+
     {% block content %}
     {% endblock %}
 

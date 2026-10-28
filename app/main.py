@@ -43,6 +43,7 @@ def index():
         proyecto=proyecto,
         nombre=nombre,
         año=año
+        error = error
     )
 
 ## List of pokemon
@@ -58,16 +59,22 @@ def listado():
     if request.method == 'POST':
         starter_name = request.form.get('starter_name', '').strip().lower()
         
-        starter_found = False
-        for p in pokemons_data:
-            if p['name'].lower() == starter_name:
-                starter_found = True
-                break
-        
-        if starter_found:
-            return redirect(url_for('battle', trainer=trainer, starter=starter_name))
+        if not starter_name:
+            starter_error = "Por favor, escribe el nombre de un Pokémon."
         else:
-            starter_error = "This pokemon dosen´t exist. Recheck the written name."
+            starter_found = False
+            for p in pokemons_data:
+                if p['name'].lower() == starter_name:
+                    starter_found = True
+                    break
+            
+            if starter_found:
+                session['starter_name'] = starter_name
+                session.pop('rival_pokemon', None)
+                session.pop('user_moves', None)
+                return redirect(url_for('battle'))
+            else:
+                starter_error = "Este Pokémon no existe. Revisa el nombre."
 
     search_name = request.args.get('name', '').strip().lower()
     search_type = request.args.get('type', '').strip().lower()
@@ -103,11 +110,13 @@ def listado():
         starter_error=starter_error
     )
 
-## Details of pokemon
+## Pokemon detail page
 @app.route('/pokemons/<int:id>/')
 def detalle(id):
-
+    
     trainer = session.get('trainer')
+    if not trainer:
+        return redirect(url_for('index'))
 
     pokemon_encontrado = None
     for p in pokemons_data:
@@ -117,20 +126,14 @@ def detalle(id):
             
     if not pokemon_encontrado:
         return "Pokemon not found", 404
-
    
-    return render_template(
-        'detalle.html', 
-        pokemon=pokemon_encontrado, 
-        proyecto="ProyectoPokemon",
-        trainer=trainer
-    )
+    return render_template('detalle.html', pokemon=pokemon_encontrado, proyecto="ProyectoPokemon", trainer=trainer)
 
 ## Battle page
 @app.route('/battle')
 def battle():
     trainer = session.get('trainer')
-    starter_name = request.args.get('starter')
+    starter_name = session.get('starter_name')
 
     if not trainer or not starter_name:
         return redirect(url_for('index'))
@@ -142,23 +145,30 @@ def battle():
             break
 
     if not user_pokemon:
-        return redirect(url_for('listado', trainer=trainer))
+        return redirect(url_for('listado'))
 
-    rival_options = []
-    for p in pokemons_data:
-        if p['name'].lower() != starter_name.lower():
-            rival_options.append(p)
-
-    if rival_options:
-        rival_pokemon = random.choice(rival_options)
+    if 'rival_pokemon' in session and 'user_moves' in session:
+        rival_pokemon = session['rival_pokemon']
+        selected_moves = session['user_moves']
     else:
-        rival_pokemon = user_pokemon
+        rival_options = []
+        for p in pokemons_data:
+            if p['name'].lower() != starter_name.lower():
+                rival_options.append(p)
 
-    user_moves = user_pokemon.get('moves', [])
-    if len(user_moves) >= 4:
-        selected_moves = random.sample(user_moves, 4)
-    else:
-        selected_moves = user_moves
+        if rival_options:
+            rival_pokemon = random.choice(rival_options)
+        else:
+            rival_pokemon = user_pokemon
+
+        user_moves = user_pokemon.get('moves', [])
+        if len(user_moves) >= 4:
+            selected_moves = random.sample(user_moves, 4)
+        else:
+            selected_moves = user_moves
+            
+        session['rival_pokemon'] = rival_pokemon
+        session['user_moves'] = selected_moves
 
     return render_template(
         'battle.html',
@@ -168,6 +178,11 @@ def battle():
         user_moves=selected_moves,
         proyecto="Batallas Pokemon"
     )
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

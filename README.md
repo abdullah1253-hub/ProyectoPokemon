@@ -1,4 +1,4 @@
-# Proyecto Pokémon - Fase 2
+# Proyecto Pokémon - Fase 3
 
 Aplicación web desarrollada con Flask para gestionar un catálogo de Pokémon (Pokédex), filtrar por atributos y realizar enfrentamientos aleatorios en una arena de batalla.
 
@@ -50,7 +50,7 @@ La aplicación se desplegará en `http://localhost:8080/`.
 ### 1. Registro de Entrenador (`/`)
 * Formulario mediante `POST`.
 * Se valida en el servidor que la cadena tenga entre 3 y 15 caracteres.
-* Al no usar bases de datos ni sesiones en esta fase, el parámetro `trainer` se mantiene pasando la variable por la URL (`?trainer=Nombre`) entre todas las vistas.
+* El nombre del entrenador se almacena en session['trainer'], eliminando la necesidad de pasar parámetros por la URL y protegiendo el acceso a las páginas posteriores.
 
 ### 2. Filtro de Pokémon (`/pokemons/`)
 * Utiliza el método `GET`.
@@ -67,8 +67,15 @@ La aplicación se desplegará en `http://localhost:8080/`.
 * Calcula rangos en la plantilla Jinja2 para clasificar el peso e independizar las barras de estadísticas.
 
 ### 5. Arena de Batalla (`/battle/`)
-* Selecciona un oponente aleatorio mediante `random.choice()`.
-* Elige 4 movimientos al azar para el Pokémon seleccionado utilizando `random.sample()`.
+* Selecciona un oponente aleatorio (random.choice()) y 4 movimientos (random.sample()), guardando ambos en session['rival_pokemon'] y session['user_moves'] para garantizar la persistencia de la batalla tras recargar la página.
+
+### Fase 6 Mantenimiento del estado con sesiones
+
+En esta fase dejé de pasar las variables de un lado a otro por la URL y pasé a usar `Flask-Session` para que la aplicación sea más robusta. Estos son los datos concretos que guardo en la sesión y el porqué:
+
+* **`trainer`**: Sirve para saber quién está conectado. Si alguien intenta saltarse el inicio y entrar directamente a la arena de batalla escribiendo la ruta a mano, al no tener la sesión validada el servidor lo bloquea y lo manda fuera.
+* **`starter_name`**: Al elegir a mi Pokémon, lo guardo aquí para que la URL de la batalla quede totalmente limpia. Así evito que los usuarios puedan hacer trampas modificando el nombre desde la barra de direcciones.
+* **`rival_pokemon` y `user_moves`**: Esto es clave para la persistencia del combate. Los guardo en la sesión nada más generarse para que queden fijados. Si no lo hiciera, cada vez que el usuario pulsara F5 por error le cambiaría el oponente y los ataques. Estos datos solo se resetean (usando `session.pop()`) si el usuario vuelve al listado y decide pelear con un Pokémon distinto.
 
 ---
 
