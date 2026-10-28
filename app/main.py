@@ -42,7 +42,7 @@ def index():
         'index.html',
         proyecto=proyecto,
         nombre=nombre,
-        año=año
+        año=año,
         error = error
     )
 
