@@ -31,7 +31,6 @@
 <div class="form-section">
     <h3>Choose your pokemon for the battle</h3>
     <form method="POST" action="{{ url_for('listado') }}" class="form-row">
-        <input type="hidden" name="trainer" value="{{ trainer }}">
         <input type="text" name="starter_name" class="form-input" placeholder="Ej: Pikachu" required>
         <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">¡GO to battle!</button>
     </form>

@@ -23,6 +23,8 @@ with RUTA_DATOS.open('r', encoding='utf-8') as f:
 ## Index page home
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if session.get('trainer'):
+        return redirect(url_for('listado'))
     proyecto = "Batallas Pokemon"
     nombre = "Abdullah"
     año = 2026
