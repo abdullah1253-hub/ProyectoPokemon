@@ -12,6 +12,8 @@ ProyectoPokemon/
 │   │   └── pokemon_service.py
 │   ├── forms/
 │   │   └── trainer_form.py
+│   ├── utils/
+│   │   └── decorators.py
 │   ├── routes/
 │   │   ├── auth_routes.py
 │   │   └── pokemon_routes.py
