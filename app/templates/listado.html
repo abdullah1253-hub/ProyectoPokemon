@@ -12,10 +12,9 @@
     </div>
 </div>
 
-
 <div class="form-section">
     <h3>Filter Pokémon</h3>
-    <form method="GET" action="{{ url_for('listado') }}" class="form-row">
+    <form method="GET" action="{{ url_for('pokemon.listado') }}" class="form-row">
         <input type="text" name="name" class="form-input" placeholder="Search by name ..." value="{{ request.args.get('name', '') }}">
         <select name="type" class="form-input">
             <option value="">-- All the types --</option>
@@ -24,13 +23,13 @@
             {% endfor %}
         </select>
         <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">Filter</button>
-        <a href="{{ url_for('listado') }}" class="btn-clear">Clear</a>
+        <a href="{{ url_for('pokemon.listado') }}" class="btn-clear">Clear</a>
     </form>
 </div>
 
 <div class="form-section">
     <h3>Choose your pokemon for the battle</h3>
-    <form method="POST" action="{{ url_for('listado') }}" class="form-row">
+    <form method="POST" action="{{ url_for('pokemon.listado') }}" class="form-row">
         <input type="text" name="starter_name" class="form-input" placeholder="Ej: Pikachu" required>
         <button type="submit" class="btn-empezar" style="padding: 10px 25px; font-size: 12px;">¡GO to battle!</button>
     </form>
@@ -51,7 +50,7 @@
             {% endfor %}
         </div>
         
-        <a href="{{ url_for('detalle', id=pokemon.id) }}" class="btn">See details</a>
+        <a href="{{ url_for('pokemon.detalle', id=pokemon.id) }}" class="btn">See details</a>
     </div>
     {% else %}
     <p class="empty-grid-msg">No pokemon found.</p>

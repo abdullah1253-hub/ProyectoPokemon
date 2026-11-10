@@ -1,24 +1,32 @@
-# Proyecto Pokémon - Fase 3
+# Proyecto Pokémon - Fase 4
 
-Aplicación web desarrollada con Flask para gestionar un catálogo de Pokémon (Pokédex), filtrar por atributos y realizar enfrentamientos aleatorios en una arena de batalla.
+Aplicación web desarrollada con Flask estructurada en una arquitectura por capas modular, utilizando Blueprints, formularios Flask-WTF y gestión de sesiones segura.
 
 ## Estructura del Repositorio
 
 ```text
 ProyectoPokemon/
 ├── app/
-│   ├── main.py                   # Servidor Flask y lógica de rutas
+│   ├── __init__.py
+│   ├── services/
+│   │   └── pokemon_service.py
+│   ├── forms/
+│   │   └── trainer_form.py
+│   ├── routes/
+│   │   ├── auth_routes.py
+│   │   └── pokemon_routes.py
 │   ├── static/
-│   │   └── style.css             # Hoja de estilos
+│   │   └── style.css
 │   └── templates/
-│       ├── base.html             # Plantilla base (Jinja2)
-│       ├── index.html            # Registro de entrenador
-│       ├── listado.html          # Vista de catálogo
-│       ├── detalle.html          # Ficha del Pokémon
-│       └── battle.html           # Arena de combate
+│       ├── base.html
+│       ├── index.html
+│       ├── listado.html
+│       ├── detalle.html
+│       └── battle.html
 ├── data/
-│   └── pokemons-competitive.json # Base de datos local
+│   └── pokemons-competitive.json
 ├── requirements.txt
+├── run.py
 └── README.md
 ```
 
@@ -26,56 +34,59 @@ ProyectoPokemon/
 
 1. Crear y activar el entorno virtual:
 
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   ```
 
 2. Instalar dependencias:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. Ejecutar la aplicación:
 
-```bash
-python app/main.py
-```
+   ```bash
+   python run.py
+   ```
 
 La aplicación se desplegará en `http://localhost:8080/`.
 
-## Funcionalidades
+## Arquitectura y Funcionalidades
 
-### 1. Registro de Entrenador (`/`)
-* Formulario mediante `POST`.
-* Se valida en el servidor que la cadena tenga entre 3 y 15 caracteres.
-* El nombre del entrenador se almacena en session['trainer'], eliminando la necesidad de pasar parámetros por la URL y protegiendo el acceso a las páginas posteriores.
+### 1. Arquitectura por Capas y Blueprints
 
-### 2. Filtro de Pokémon (`/pokemons/`)
-* Utiliza el método `GET`.
-* Se usa `GET` en los filtros para que los parámetros de búsqueda queden guardados en la URL (`?name=pika&type=electric`), lo que permite recargar la página o compartir el enlace con los filtros aplicados.
-* En `main.py` se leen los argumentos con `request.args` y se filtra la lista antes de enviarla al renderizado.
+El código se ha desacoplado de un único fichero y se ha organizado en capas funcionales dentro del paquete `app`:
 
-### 3. Elección de Inicial para Batalla (`/pokemons/`)
-* Formulario independiente en la misma vista usando `POST`.
-* Se valida que el Pokémon introducido exista en la lista cargada desde el JSON.
-* Gestiona las validaciones y redirecciones correspondientes.
+- **Capa de Servicio (`services/`)**: centraliza la lectura del fichero JSON, el filtrado de Pokémon y la lógica aleatoria de oponentes mediante funciones puras.
+- **Blueprints (`routes/`)**:
+  - `auth_bp` (`auth_routes.py`): gestiona el acceso inicial, la validación y el cierre de sesión (`/logout`).
+  - `pokemon_bp` (`pokemon_routes.py`): controla el catálogo, los filtros de búsqueda, las fichas de detalle y la arena de combate.
 
-### 4. Ficha de Detalle (`/pokemons/<id>`)
-* Busca el objeto por su ID dinámico.
-* Calcula rangos en la plantilla Jinja2 para clasificar el peso e independizar las barras de estadísticas.
+### 2. Registro y Autenticación con Flask-WTF (`/`)
 
-### 5. Arena de Batalla (`/battle/`)
-* Selecciona un oponente aleatorio (random.choice()) y 4 movimientos (random.sample()), guardando ambos en session['rival_pokemon'] y session['user_moves'] para garantizar la persistencia de la batalla tras recargar la página.
+- Utiliza una clase `TrainerForm` basada en `Flask-WTF` para gestionar el formulario de entrada.
+- Incorpora protección contra ataques CSRF mediante `hidden_tag()` y validación automática de longitud (entre 3 y 15 caracteres) en el servidor.
+- **Control de sesión**: si un usuario ya tiene una sesión activa (`session['trainer']`), visitar la raíz (`/`) redirige automáticamente al catálogo sin volver a mostrar el formulario.
 
-### Fase 6 Mantenimiento del estado con sesiones
+### 3. Filtro de Pokémon (`/pokemons/`)
 
-En esta fase dejé de pasar las variables de un lado a otro por la URL y pasé a usar `Flask-Session` para que la aplicación sea más robusta. Estos son los datos concretos que guardo en la sesión y el porqué:
+- Emplea el método `GET` para conservar los parámetros de búsqueda (`?name=pika&type=electric`) en la URL, facilitando la recarga y el uso compartido de enlaces.
+- La lógica de filtrado se procesa de forma limpia desde la capa de servicio.
 
-* **`trainer`**: Sirve para saber quién está conectado. Si alguien intenta saltarse el inicio y entrar directamente a la arena de batalla escribiendo la ruta a mano, al no tener la sesión validada el servidor lo bloquea y lo manda fuera.
-* **`starter_name`**: Al elegir a mi Pokémon, lo guardo aquí para que la URL de la batalla quede totalmente limpia. Así evito que los usuarios puedan hacer trampas modificando el nombre desde la barra de direcciones.
-* **`rival_pokemon` y `user_moves`**: Esto es clave para la persistencia del combate. Los guardo en la sesión nada más generarse para que queden fijados. Si no lo hiciera, cada vez que el usuario pulsara F5 por error le cambiaría el oponente y los ataques. Estos datos solo se resetean (usando `session.pop()`) si el usuario vuelve al listado y decide pelear con un Pokémon distinto.
+### 4. Elección de Inicial para Batalla (`/pokemons/`)
+
+- Formulario independiente mediante `POST` que valida la existencia del Pokémon introducido antes de redirigir a la arena.
+
+### 5. Ficha de Detalle (`/pokemons/<id>`)
+
+- Busca dinámicamente el Pokémon por su identificador y calcula rangos de peso y estadísticas directamente en las plantillas Jinja2.
+
+### 6. Arena de Batalla (`/battle/`)
+
+- Selecciona un oponente aleatorio (`random.choice()`) y 4 movimientos (`random.sample()`).
+- **Persistencia**: almacena los datos en `session['rival_pokemon']` y `session['user_moves']`, evitando cambios indeseados al refrescar la página (F5) y asegurando que solo se reinicien al seleccionar un nuevo Pokémon inicial.
 
 ---
 

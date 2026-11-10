@@ -5,25 +5,29 @@
 {% block body_class %}body-inicio{% endblock %}
 
 {% block content %}
-
 <div class="hero-section">
-        <h1 class="titulo-inicio">¡{{ proyecto }}!</h1>
-        <p class="subtitle">Get ready for the ultimate adventure.</p>
+    <h1 class="titulo-inicio">¡{{ proyecto }}!</h1>
+    <p class="subtitle">Get ready for the ultimate adventure.</p>
+    
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokemon logo" class="pokemon-image">
+    
+    <form method="POST" action="{{ url_for('auth.index') }}" class="trainer-form">
+        {{ form.hidden_tag() }}
+        {{ form.trainer(placeholder="Trainer's name (3-15 chars)", class="form-input") }}
         
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokemon logo" class="pokemon-image">
-        
-        <form method="POST" action="{{ url_for('index') }}" class="trainer-form">
-        <input type="text" name="trainer" placeholder="Trainer's name (3-15 chars)" required minlength="3" maxlength="15">
+        {% if form.trainer.errors %}
+            <div style="color: #ff6b6b; margin-top: 10px; font-weight: bold;">
+                {% for error in form.trainer.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <button type="submit" class="btn-empezar">Continue</button>
     </form>
+</div>
 
-    {% if error %}
-        <p style="color: #ff6b6b; margin-top: 10px; font-weight: bold;">{{ error }}</p>
-    {% endif %}
-    </div>
-
-    <footer>
-        {{ proyecto }} - {{ nombre }} - {{ año }}
-    </footer>
-
+<footer>
+    {{ proyecto }} - {{ nombre }} - {{ año }}
+</footer>
 {% endblock %}

@@ -14,7 +14,7 @@
 
     {% if session.get('trainer') %}
     <div class="logout-container">
-        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+        <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
     </div>
     {% endif %}
 
