@@ -1,16 +1,4 @@
-import json
-import random
-from pathlib import Path
 
-RUTA_DATOS = Path(__file__).resolve().parent.parent.parent / "data" / "pokemons-competitive.json"
-
-def load_pokemons():
-    if not RUTA_DATOS.exists():
-        return []
-    with RUTA_DATOS.open('r', encoding='utf-8') as f:
-        return json.load(f)
-
-_pokemons_cache = load_pokemons()
 
 def get_all_pokemons():
     return _pokemons_cache
