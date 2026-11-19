@@ -1,14 +1,14 @@
 import random
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from app.services import pokemon_service
+from app.utils.decorators import trainer_required
 
 pokemon_bp = Blueprint('pokemon', __name__)
 
 @pokemon_bp.route('/pokemons/', methods=['GET', 'POST'])
+@trainer_required
 def listado():
     trainer = session.get('trainer')
-    if not trainer:
-        return redirect(url_for('auth.index'))
         
     starter_error = None
 
@@ -40,10 +40,9 @@ def listado():
     )
 
 @pokemon_bp.route('/pokemons/<int:id>/')
+@trainer_required
 def detalle(id):
     trainer = session.get('trainer')
-    if not trainer:
-        return redirect(url_for('auth.index'))
         
     pokemon = pokemon_service.get_pokemon_by_id(id)
     if not pokemon:
@@ -52,10 +51,9 @@ def detalle(id):
     return render_template('detalle.html', pokemon=pokemon, proyecto="ProyectoPokemon", trainer=trainer)
 
 @pokemon_bp.route('/battle')
+@trainer_required
 def battle():
     trainer = session.get('trainer')
-    if not trainer:
-        return redirect(url_for('auth.index'))
         
     starter_name = session.get('starter_name')
     if not starter_name:
